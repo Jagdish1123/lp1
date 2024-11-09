@@ -8,6 +8,12 @@
 
 using namespace std;
 
+vector<string> split(const string &line) {
+    istringstream iss(line);
+    return vector<string>((istream_iterator<string>(iss)), istream_iterator<string>());
+}
+
+
 int main() {
     ifstream br("input.txt");
     ofstream mnt("mnt.txt");
@@ -28,7 +34,12 @@ int main() {
 
     while (getline(br, line)) {
         istringstream iss(line);
+        // cout<<iss<<endl;
         vector<string> parts((istream_iterator<string>(iss)), istream_iterator<string>());
+        for(int i=0;i<parts.size();i++){
+            cout<<parts[i]<<" ";
+        }
+        cout<<endl;
 
         if (parts[0] == "MACRO" || parts[0] == "macro") {
             flag = 1;
@@ -36,24 +47,30 @@ int main() {
             istringstream iss2(line);
             vector<string> parts2((istream_iterator<string>(iss2)), istream_iterator<string>());
             Macroname = parts2[0];
+            cout<<endl;
+            for(int i=0;i<parts2.size();i++){
+                cout<<parts2[i]<<" ";
+            }
+            cout<<endl;
 
             if (parts2.size() <= 1) {
                 mnt << parts2[0] << "\t" << pp << "\t" << kp << "\t" << mdtp << "\t" << (kp == 0 ? kpdtp : (kpdtp + 1)) << "\n";
                 continue;
             }
 
-            for (size_t i = 1; i < parts2.size(); ++i) {
+            for (int i = 1; i < parts2.size(); ++i) {
                 string param = parts2[i];
                 param.erase(remove_if(param.begin(), param.end(), [](char c) { return c == '&' || c == ','; }), param.end());
 
                 if (param.find('=') != string::npos) {
                     ++kp;
-                    size_t pos = param.find('=');
+                    int pos = param.find('=');
                     string keywordParam = param.substr(0, pos);
                     string value = param.substr(pos + 1);
                     pntab[keywordParam] = paramNo++;
                     kpdt << keywordParam << "\t" << value << "\n";
-                } else {
+                } 
+                else {
                     pntab[param] = paramNo++;
                     ++pp;
                 }
@@ -64,7 +81,8 @@ int main() {
             kp = 0;
             pp = 0;
 
-        } else if (parts[0] == "MEND" || parts[0] == "mend") {
+        } 
+        else if (parts[0] == "MEND" || parts[0] == "mend") {
             mdt << line << "\n";
             flag = kp = pp = 0;
             ++mdtp;
@@ -77,19 +95,22 @@ int main() {
             pnt << "\n";
             pntab.clear();
 
-        } else if (flag == 1) {
+        } 
+        else if (flag == 1) {
             for (const auto& part : parts) {
                 if (part.find('&') != string::npos) {
                     string param = part;
                     param.erase(remove_if(param.begin(), param.end(), [](char c) { return c == '&' || c == ','; }), param.end());
                     mdt << "(P," << pntab[param] << ")\t";
-                } else {
+                } 
+                else {
                     mdt << part << "\t";
                 }
             }
             mdt << "\n";
             ++mdtp;
-        } else {
+        }
+        else {
             ir << line << "\n";
         }
     }
@@ -104,3 +125,26 @@ int main() {
     cout << "Macro Pass1 Processing done. :)" << endl;
     return 0;
 }
+
+
+
+
+
+// MACRO
+// M1	    &X, &Y, &A=AREG, &B=
+// MOVER	&A, &X
+// ADD	    &A, ='1'
+// MOVER	&B, &Y
+// ADD	    &B, ='5'
+// MEND
+// MACRO
+// M2	    &P, &Q, &U=CREG, &V=DREG
+// MOVER	&U, &P
+// MOVER	&V, &Q
+// ADD	    &U, ='15'
+// ADD	    &V, ='10'
+// MEND
+// START	100
+// M1	    10, 20, &B=CREG
+// M2	    100, 200, &V=AREG, &U=BREG
+// END
