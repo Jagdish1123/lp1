@@ -136,3 +136,58 @@ int main() {
     // nextFit(blockSizes, processSizes);
     return 0;
 }
+
+
+// int main() {
+//     int numBlocks, numProcesses;
+
+//     cout << "Enter the number of memory blocks: ";
+//     cin >> numBlocks;
+//     vector<int> blockSizes(numBlocks);
+//     cout << "Enter the sizes of the memory blocks: ";
+//     for (int i = 0; i < numBlocks; ++i) {
+//         cin >> blockSizes[i];
+//     }
+
+//     cout << "Enter the number of processes: ";
+//     cin >> numProcesses;
+//     vector<int> processSizes(numProcesses);
+//     cout << "Enter the sizes of the processes: ";
+//     for (int i = 0; i < numProcesses; ++i) {
+//         cin >> processSizes[i];
+//     }
+
+//     int choice;
+//     do {
+//         cout << "Menu:\n";
+//         cout << "1. Best Fit\n";
+//         cout << "2. Worst Fit\n";
+//         cout << "3. First Fit\n";
+//         cout << "4. Next Fit\n";
+//         cout << "5. Exit\n";
+//         cout << "Enter your choice: ";
+//         cin >> choice;
+
+//         switch (choice) {
+//             case 1:
+//                 bestFit(blockSizes, processSizes);
+//                 break;
+//             case 2:
+//                 worstFit(blockSizes, processSizes);
+//                 break;
+//             case 3:
+//                 firstFit(blockSizes, processSizes);
+//                 break;
+//             case 4:
+//                 nextFit(blockSizes, processSizes);
+//                 break;
+//             case 5:
+//                 cout << "Exiting...\n";
+//                 break;
+//             default:
+//                 cout << "Invalid choice. Please try again.\n";
+//         }
+//     } while (choice != 5);
+
+//     return 0;
+// }
