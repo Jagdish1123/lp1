@@ -141,6 +141,7 @@ int main()
     const char *path1 = "ic.txt"; 
     const char *path2 = "sym_table.txt";
     const char *path3 = "lit_table.txt";
+    
     ic.open(path1);
     st.open(path2);
     lt.open(path3);
@@ -155,7 +156,8 @@ int main()
         fin >> label >> opcode >> op1 >> op2; 
         int id;
         string IC, lc; 
-
+        
+        //for first column 
         id = getOP(opcode);
         IC = "(" + optab[id].mclass + "," + optab[id].mnemonic + ") ";
 
@@ -185,7 +187,7 @@ int main()
                 scnt++;
             }
         }
-
+        //label
         else if (label != "NAN")
         {
             if (presentST(label))
@@ -256,7 +258,7 @@ int main()
             lc = "---";
             IC += " NAN NAN";
             cout << " " << label << "\t" << opcode << "\t" << op1 << "\t" << op2 << "\t" << lc << "\t" << IC << endl;
-            ic << lc << "\t" << IC << endl;
+            
             if (nlcnt)
             {
                 for (int i = lcnt - nlcnt; i < lcnt; ++i)
@@ -274,7 +276,7 @@ int main()
                 PT[pcnt].lno = "#" + to_string(LT[lcnt - nlcnt].no);
                 PT[pcnt].no = pcnt + 1;
                 pcnt++;
-            }
+            }   
             break;
         }
 

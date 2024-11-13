@@ -28,14 +28,15 @@ string generateMachineCode(const string& lc, const string& ic1, const string& ic
                             const unordered_map<string, string>& litTable) {
     string MC; // machine code
 
-    
+    //no machine code 
     if (ic1.substr(1, 2) == "AD" || (ic1.substr(1, 2) == "DL" && ic1.substr(4, 2) == "02")) {
         MC = " -No Machine Code-";
     }
-    
+    //DC statment 
     else if (ic1.substr(1, 2) == "DL" && ic1.substr(4, 2) == "01") {
         MC = "00\t0\t00" + ic2.substr(3, 1);
-    } else { 
+    } 
+    else { 
         if (ic1 == "(IS,00)") { // Specifically for STOP
             MC = ic1.substr(4, 2) + "\t0\t000";
         } else if (ic2.substr(1, 1) == "S") { // If opcode in pass1 was ORIGIN
@@ -48,7 +49,6 @@ string generateMachineCode(const string& lc, const string& ic1, const string& ic
             }
         }
     }
-
     return MC;
 }
 
@@ -80,7 +80,6 @@ int main() {
             cout << " " << lc << "\t" << ic1 << "\t" << ic2 << "\t " << ic3 
                  << "\t\t\t" << lc << "\t" << MC << endl;
         }
-
         mc << lc << "\t" << MC << endl; // Write machine code to output file
     }
 

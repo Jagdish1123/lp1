@@ -99,17 +99,17 @@ void nextFit(vector<int> blockSizes,vector<int> processSizes){
     int m = blockSizes.size();
     int n = processSizes.size();
     vector<int> allocation(n,-1);
-    int lastAllocatedBlock = 0;
+    int lastidx = 0;
     for(int i = 0;i<n;i++){
-        int startIdx = lastAllocatedBlock;
+        int startIdx = lastidx;
         while(true){
-            if(blockSizes[lastAllocatedBlock]>=processSizes[i]){
-                allocation[i] = lastAllocatedBlock;
-                blockSizes[lastAllocatedBlock]-=processSizes[i];
+            if(blockSizes[lastidx]>=processSizes[i]){
+                allocation[i] = lastidx;
+                blockSizes[lastidx]-=processSizes[i];
                 break;
             }
-            lastAllocatedBlock = (lastAllocatedBlock+1)%m;
-            if(lastAllocatedBlock == startIdx){
+            lastidx = (lastidx+1)%m;
+            if(lastidx == startIdx){
                 break;
             }
         }
@@ -131,8 +131,8 @@ int main() {
     vector<int> blockSizes = {100, 500, 200, 300, 600};
     vector<int> processSizes = {212, 417, 112, 426};
     bestFit(blockSizes, processSizes);
-    worstFit(blockSizes, processSizes);
-    firstFit(blockSizes, processSizes);
-    nextFit(blockSizes, processSizes);
+    // worstFit(blockSizes, processSizes);
+    // firstFit(blockSizes, processSizes);
+    // nextFit(blockSizes, processSizes);
     return 0;
 }

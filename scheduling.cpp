@@ -56,7 +56,7 @@ public:
         ct[min_bt_index] = current_time;
         tat[min_bt_index] = ct[min_bt_index] - p[min_bt_index].at;
         wt[min_bt_index] = tat[min_bt_index] - p[min_bt_index].bt;
-      }
+      } 
     }
   }
 
@@ -108,7 +108,7 @@ public:
       for (int i = 0; i < n; i++) {
         if (p[i].at <= current_time && remaining_time[i] > 0) {
 
-          done = false; // There is still a pending process
+          done = false; 
 
           if (remaining_time[i] > quantum) {
             current_time += quantum;

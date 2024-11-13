@@ -1,30 +1,25 @@
-#include <iostream>
-#include <vector>
-#include <map>
-#include <sstream>
-#include <fstream>
-#include <iterator>
-#include <algorithm>
+#include<bits/stdc++.h>
 using namespace std;
 
 vector<string> split(const string &line) {
-    vector<string> parts;
+    vector<string> words;
     stringstream iss(line);
     string word;
     while (iss >> word) {
-        parts.push_back(word);
+        words.push_back(word);
     }
-    return parts;
+    return words;
 }
 
 int main() {
-    ifstream br("input.txt");
+    ifstream file("input.txt");
     ofstream mnt("mnt.txt");
     ofstream mdt("mdt.txt");
     ofstream kpdt("kpdt.txt");
     ofstream pnt("pnt.txt");
     ofstream ir("intermediate.txt");
-    if (!br.is_open() || !mnt.is_open() || !mdt.is_open() || !kpdt.is_open() || !pnt.is_open() || !ir.is_open()) {
+
+    if (!file.is_open() || !mnt.is_open() || !mdt.is_open() || !kpdt.is_open() || !pnt.is_open() || !ir.is_open()) {
         cout << "Error in opening file " << endl;
         return 1;
     }
@@ -34,21 +29,29 @@ int main() {
     string macroname;
     int mdtp = 1, kpdtp = 0, paramNo = 1, pp = 0, kp = 0, flag = 0;
 
-    while (getline(br, line)) {
-        vector<string> parts = split(line);
+    while (getline(file, line)) 
+    {
+        vector<string> words = split(line);
         
-        if (parts[0] == "MACRO" || parts[0] == "macro") {
+        if (words[0] == "MACRO" || words[0] == "macro") {
+
+            //flag-macro defination
             flag = 1;
-            if (!getline(br, line)) break;
-            vector<string> parts2 = split(line);
-            macroname = parts2[0];
-            if (parts2.size() <= 1) {
-                mnt << parts2[0] << "\t" << pp << "\t" << kp << "\t" << mdtp << "\t" << (kp == 0 ? kpdtp : (kpdtp + 1)) << "\n";
+            if (!getline(file, line)) break;
+            vector<string> words2 = split(line);
+            macroname = words2[0];
+            
+            //no paramerter 
+            if (words2.size() <= 1) {
+                mnt << words2[0] << "\t" << pp << "\t" << kp << "\t" << mdtp << "\t" << (kp == 0 ? kpdtp : (kpdtp + 1)) << "\n";
                 continue;
             }
-            
-            for (int i = 1; i < parts2.size(); i++) {
-                string param = parts2[i];
+
+
+            //parameter handling
+            for (int i = 1; i < words2.size(); i++) {
+                string param = words2[i];
+                //remove special char 
                 for (auto it = param.begin(); it != param.end(); ) {
                     if (*it == '&' || *it == ',') {
                         it = param.erase(it);
@@ -57,7 +60,7 @@ int main() {
                         ++it;
                     }
                 }
-
+                //keyword parameter 
                 if (param.find("=") != string::npos) {
                     kp++;
                     int pos = param.find("=");
@@ -66,18 +69,22 @@ int main() {
                     pntab[keyword] = paramNo++;
                     kpdt << keyword << "\t" << value << "\n";
                 } 
+                //postional paramerter
                 else {
                     pntab[param] = paramNo++;
                     ++pp;
                 }
             }
-            mnt << parts2[0] << "\t" << pp << "\t" << kp << "\t" << mdtp << "\t" << (kp == 0 ? kpdtp : (kpdtp + 1)) << "\n";
+
+            mnt << words2[0] << "\t" << pp << "\t" << kp << "\t" << mdtp << "\t" << (kp == 0 ? kpdtp : (kpdtp + 1)) << "\n";
             kpdtp += kp;
             kp = 0;
             pp = 0;
         }
-        else if (parts[0] == "MEND" || parts[0] == "mend") {
+
+        else if (words[0] == "MEND" || words[0] == "mend") {
             mdt << line << "\n";
+            //reset all values
             flag = kp = pp = 0;
             ++mdtp;
             paramNo = 1;
@@ -89,7 +96,8 @@ int main() {
             pntab.clear();
         }
         else if (flag == 1) {
-            for (const auto &part : parts) {
+            for (const auto &part : words) {
+
                 if (part.find('&') != string::npos) {
                     string param = part;
                     for (auto it = param.begin(); it != param.end(); ) {
@@ -102,6 +110,8 @@ int main() {
                     }
                     mdt << "(p," << pntab[param] << ")\t";
                 } 
+
+                
                 else {
                     mdt << part << "\t";
                 }
@@ -115,7 +125,7 @@ int main() {
     }
 
     // Closing files outside the while loop
-    br.close();
+    file.close();
     mnt.close();
     mdt.close();
     kpdt.close();

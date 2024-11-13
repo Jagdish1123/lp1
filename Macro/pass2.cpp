@@ -1,14 +1,5 @@
-
-
-#include<iostream>
-#include<sstream>
-#include<unordered_map>
-#include<string>
-#include<algorithm>
-#include<fstream>
-#include<vector>
+#include<bits/stdc++.h>
 using namespace std;
-
 
 vector<string>split(string line){
     string word;
@@ -20,7 +11,6 @@ vector<string>split(string line){
     return v;
 }
 
-
 class MNTEntry{
     public:
     string name;
@@ -28,13 +18,17 @@ class MNTEntry{
     int kp;
     int mdtp;
     int kpdtp;
-    MNTEntry(string n="", int p=0, int k=0, int m=0, int kpdtp_val=0){
-    name = n;
-    pp = p;
-    kp = k;
-    mdtp = m;        
-    kpdtp = kpdtp_val;
-}
+    
+    MNTEntry(string n="", int p=0, int k=0, int m=0, int kpdtp_val=0)
+
+    {
+        name = n;
+        pp = p;
+        kp = k;
+        mdtp = m;        
+        kpdtp = kpdtp_val;
+    }
+
     int getpp(){return pp;}
     int getkp(){return kp;}
     int getmdtp(){return mdtp;}
@@ -45,19 +39,27 @@ class MNTEntry{
 
 int main(){
 
-    ifstream irb("intermediate.txt"),mdtb("mdt.txt"),mntb("mnt.txt"),kpdtb("kpdt.txt");
+    ifstream ic("intermediate.txt"),mdtb("mdt.txt"),mntb("mnt.txt"),kpdtb("kpdt.txt");
     ofstream pass2("pass2.txt");
-    if(!irb.is_open()||!mdtb.is_open()||!mntb.is_open()||!kpdtb.is_open()||!pass2.is_open()){
+    if(!ic.is_open()||!mdtb.is_open()||!mntb.is_open()||!kpdtb.is_open()||!pass2.is_open()){
         cout<<"Error in opening files "<<endl;
         return 1;
     }
+
     unordered_map<string,MNTEntry>mnt;
     unordered_map<int,string>aptab;
     unordered_map<string,int>aptabinverse;
+
     vector<string>mdt,kpdt;
+
     string line;
+
+    // Reading lines into MDT and KPDT
     while(getline(mdtb,line))mdt.push_back(line);
     while(getline(kpdtb,line))kpdt.push_back(line);
+
+
+    // Reading MNT entries from file and populating MNT table
     while(getline(mntb,line)){
         stringstream ss(line);
         string name;
@@ -69,37 +71,52 @@ int main(){
         mnt[name] = MNTEntry(name, pp, kp, mdtp, kpdtp);
     }
 
-    while(getline(irb,line)){
-        vector<string>parts=split(line);
-        if(mnt.count(parts[0])){
-            MNTEntry &entry=mnt[parts[0]];
+    while(getline(ic,line)){
+
+        vector<string>words=split(line);
+        // cout<<words[0]<<endl;
+        // cout<<mnt.count(words[0]);
+
+        if(mnt.count(words[0])){//name
+
+            MNTEntry &entry=mnt[words[0]];
+
             int pp=entry.getpp();
             int kp=entry.getkp();
             int mdtp=entry.getmdtp();
             int kpdtp=entry.getkpdtp();
+
             int paramno=1;
-            for(int i=1;i<=pp&&i<parts.size();i++){
-                aptab[paramno]=parts[i];
-                aptabinverse[parts[i]]=paramno++;
+
+            for(int i=1;i<=pp&&i<words.size();i++){
+                aptab[paramno]=words[i];
+                aptabinverse[words[i]]=paramno++;
             }
+
             for(int i=kpdtp-1;i<kpdtp-1+kp&&i<kpdt.size();i++){
+
                 stringstream ss(kpdt[i]);
                 string paramname,defaultvalue;
+
                 ss>>paramname>>defaultvalue;
                 aptab[paramno]=defaultvalue;
                 aptabinverse[paramname]=paramno++;
-                cout << "Adding to aptab: " << paramno << " -> " << defaultvalue << endl;
-                cout << "Adding to aptabinverse: " << paramname << " -> " << paramno << endl;
+
+                // cout << "Adding to aptab: " << paramno << " -> " << defaultvalue << endl;
+                // cout << "Adding to aptabinverse: " << paramname << " -> " << paramno << endl;
 
                 
             }
-            for(int i=pp+1;i<parts.size();i++){
-                // int pos=parts[i].find("=");
-                if(parts[i].find("=")!=string::npos){
-                    int pos=parts[i].find("=");
-                    string keyword=parts[i].substr(0,pos);
-                    string value=parts[i].substr(pos+1);
+            //keyword para
+            for(int i=pp+1;i<words.size();i++){
+
+                if(words[i].find("=")!=string::npos){
+
+                    int pos=words[i].find("=");
+                    string keyword=words[i].substr(0,pos);
+                    string value=words[i].substr(pos+1);
                     if(aptabinverse.count(keyword)) aptab[aptabinverse[keyword]]=value;
+
                 }
 
             }
@@ -108,6 +125,7 @@ int main(){
                 stringstream ss(mdt[i]);
                 string token;
                 pass2<<"+";
+                
                 while(ss>>token){
                     if(token.find("(p,")!=string::npos){
                         int num=stoi(token.substr(3,token.find(')')-3));
